@@ -28,12 +28,14 @@ func SuspendStudent(c *gin.Context) {
 	// Call BindJSON to bind the received JSON to student
 	if err := c.BindJSON(&student); err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "invalid json fields"})
+		return
 	}
 
 	// search for student in DB set IsSuspended to true
 	result := db.First(&studentToSuspend, "email = ?", student.Student)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "student does not exist"})
+		return
 	}
 	studentToSuspend.IsSuspended = true
 	db.Save(&studentToSuspend)
