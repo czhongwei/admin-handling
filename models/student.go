@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Student struct {
 	gorm.Model
-	ID          int
-	Email       string `gorm:"unique"`
+	Email       string `gorm:"primaryKey"`
 	IsSuspended bool
+	Teachers    []*Teacher `gorm:"many2many:teacher_students;"`
 }

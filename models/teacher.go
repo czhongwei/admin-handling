@@ -4,6 +4,6 @@ import "gorm.io/gorm"
 
 type Teacher struct {
 	gorm.Model
-	ID    int
-	Email string `gorm:"unique"`
+	Email    string     `gorm:"primaryKey"`
+	Students []*Student `gorm:"many2many:teacher_students;"`
 }
