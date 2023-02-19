@@ -5,5 +5,5 @@ import "gorm.io/gorm"
 type Teacher struct {
 	gorm.Model
 	ID    int
-	Email string `gorm:"embedded"`
+	Email string `gorm:"unique"`
 }
