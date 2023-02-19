@@ -42,6 +42,21 @@ func SuspendStudent(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
+func AddStudent(c *gin.Context) {
+	var student StudentEmail
+	if err := c.BindJSON(&student); err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "invalid json fields"})
+	}
+	newStudent := models.Student{Email: student.Student, IsSuspended: false}
+
+	result := db.Create(&newStudent)
+	if err := result.Error; err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"message": "unable to add student"})
+		return
+	}
+	c.Status(http.StatusCreated)
+}
+
 func RetrieveNotifications(c *gin.Context) {
 	// TODO
 	var request RetrieveNotificationsArgs
