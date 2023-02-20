@@ -1,6 +1,7 @@
 package database
 
 import (
+	"admin-handling/initializers"
 	"fmt"
 	"os"
 
@@ -11,6 +12,7 @@ import (
 var Db *gorm.DB
 
 func InitDb() *gorm.DB {
+	initializers.LoadEnvVariables()
 	Db = connectDB()
 	return Db
 }
