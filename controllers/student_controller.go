@@ -20,6 +20,10 @@ type StudentEmail struct {
 	Student string `json:"student"`
 }
 
+type Students struct {
+	Students []string `json:"students"`
+}
+
 var db *gorm.DB = database.InitDb()
 
 func SuspendStudent(c *gin.Context) {
@@ -62,24 +66,27 @@ func RetrieveNotifications(c *gin.Context) {
 	var request RetrieveNotificationsArgs
 	if err := c.BindJSON(&request); err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "invalid json fields"})
+		return
 	}
 
-	// search for teacher in DB
+	// search for students under this teacher in DB with is_suspended = false
 
-	// comb through notification to search for tagged students
+	// comb through notification to search for tagged students, check is_suspended = false
 
 	c.IndentedJSON(http.StatusOK, request)
 }
 
-func RegisterStudents(c *gin.Context) {
-	// TODO
-	//var request RegisterStudents
-	c.Status(http.StatusNoContent)
-}
-
 func GetCommonStudents(c *gin.Context) {
-	// TODO
-	students := 1 // placeholder
+	teachers := c.QueryArray("teacher")
+	count := len(teachers)
+	if len(teachers) == 0 {
+		students := []string{}
+		c.IndentedJSON(http.StatusOK, gin.H{"students": students})
+		return
+	}
+	var studentsEmail []string
+	db.Table("teacher_students").Select("student_email").Where("teacher_email IN ?", teachers).Group("student_email").Having("COUNT(student_email) = ?", count).Find(&studentsEmail)
+	//db.Raw("SELECT TS.student_email FROM teacher_students TS WHERE TS.student_email IN ?", teachers).Group("teacher_students.student_email").Having("COUNT(teacher_students.student_email) = ?", count)
 
-	c.IndentedJSON(http.StatusOK, students)
+	c.IndentedJSON(http.StatusOK, gin.H{"students": studentsEmail})
 }
