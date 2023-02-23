@@ -18,6 +18,7 @@ Example:
     * `DB_HOST=localhost`
     * `DB_PORT=3306`
 
+* Run `go run migration/migration.go` to migrate the database tables into your own database.
 
 ## Running the sever
 * Using the terminal, change the current working directory to /admin-handling
